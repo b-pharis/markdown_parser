@@ -1,7 +1,7 @@
 import unittest
 from inline_markdown import (
     split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_link,
-    split_nodes_image
+    split_nodes_image, text_to_textnodes
 )
 
 from textnode import TextNode, TextType
@@ -148,25 +148,34 @@ class TestInlineMarkdown(unittest.TestCase):
             ],
             new_nodes,
         )'''
+    
+    def test_is_equal(self):
+        pass
 
+    def test_text_to_textnodes(self):
+        nodes = text_to_textnodes(
+            "This is **text** with an *italic* word and a `code block` and an ![image](https://i.imgur.com/zjjcJKZ.png) and a [link](https://boot.dev)"
+        )
+        self.assertListEqual(
+            [
+                TextNode("This is ", TextType.TEXT),
+                TextNode("text", TextType.BOLD),
+                TextNode(" with an ", TextType.TEXT),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" word and a ", TextType.TEXT),
+                TextNode("code block", TextType.CODE),
+                TextNode(" and an ", TextType.TEXT),
+                TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and a ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "https://boot.dev"),
+            ],
+            nodes,
+        )
 
 '''text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
 print(extract_markdown_images(text))
 text = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
 print(extract_markdown_links(text))'''
 
-node = TextNode(
-    "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
-    TextType.TEXT,
-)
-node1 = TextNode(
-    "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
-    TextType.TEXT,
-)
-
-new_nodes = split_nodes_link([node])
-print(new_nodes)
-new_nodes = split_nodes_image([node1])
-print(new_nodes)
 if __name__ == "__main__":
     unittest.main()
