@@ -4,6 +4,7 @@ from block_markdown import markdown_to_html_node
 
 def main():
     basepath = sys.argv[1] if len(sys.argv) > 1 else "/"
+    print(basepath)
     dir_path_static = "./static"
     dir_path_docs = "./docs"
     dir_path_content = "./content"
@@ -67,10 +68,15 @@ def generate_page(from_path, template_path, dest_path, basepath):
     html = node.to_html()
 
     title = extract_title(markdown_content)
+
+    if basepath.endswith('/') and basepath != '/':
+        basepath = basepath[:-1]
+    
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", html)
-    template = template.replace('href="', f'href="{basepath}')
-    template = template.replace('src="', f'src="{basepath}')
+        
+    template = template.replace('href="/', f'href="{basepath}/')
+    template = template.replace('src="/', f'src="{basepath}/')
 
 
     dest_dir_path = os.path.dirname(dest_path)
